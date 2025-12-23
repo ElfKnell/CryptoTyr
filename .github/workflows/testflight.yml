@@ -53,9 +53,9 @@ jobs:
       - name: Create App Store Connect API key
         run: |
           mkdir -p fastlane
-          echo -n "${ASC_KEY_P8}" > fastlane/AuthKey.p8
+          echo "${ASC_KEY_P8_BASE64}" | base64 --decode > fastlane/AuthKey.p8
         env:
-          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+          ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
 
       # --------------------------
       # 6️⃣ Запуск fastlane lane

@@ -6,3 +6,11 @@
 //
 
 import Foundation
+
+struct CoinGrowth: Identifiable {
+    let id = UUID()
+    let pair: String
+    let base: String
+    let quote: String
+    let change: Double
+}

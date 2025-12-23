@@ -6,3 +6,9 @@
 //
 
 import Foundation
+
+nonisolated
+struct KrakenTickerResponse: Sendable, Codable {
+    let error: [String]
+    let result: [String: TickerInfo]
+}

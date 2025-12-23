@@ -6,3 +6,15 @@
 //
 
 import Foundation
+import Factory
+
+extension Container {
+    
+    @MainActor
+    var AllTicker: Factory<any AllTickerPricesProtocol> {
+        self {
+            AllTickerPrices()
+        }.singleton
+    }
+    
+}

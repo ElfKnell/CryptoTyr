@@ -6,3 +6,18 @@
 //
 
 import Foundation
+import Combine
+
+final class AppCoordinator: ObservableObject {
+    
+    @Published var selectedScreen: AppScreen = .allTickers
+        
+    func navigateToGainers() {
+        selectedScreen = .topGainers
+    }
+    
+    func navigateToTickers() {
+        selectedScreen = .allTickers
+    }
+    
+}

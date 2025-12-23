@@ -6,3 +6,10 @@
 //
 
 import Foundation
+
+protocol AllTickerPricesProtocol {
+    
+    func fetchAllTickerPrices() async throws -> [String: TickerInfo]
+    func parseKrakenPair(_ pair: String) -> (base: String, quote: String)
+    
+}

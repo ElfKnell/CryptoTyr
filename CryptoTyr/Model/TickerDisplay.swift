@@ -6,3 +6,10 @@
 //
 
 import Foundation
+
+struct TickerDisplay: Identifiable {
+    let id = UUID()
+    let pairbBase: String
+    let pairbQuote: String
+    let lastPrice: String
+}
