@@ -1,0 +1,71 @@
+name: iOS TestFlight Beta
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  beta:
+    runs-on: macos-14
+
+    steps:
+      # --------------------------
+      # 1️⃣ Checkout репозиторію
+      # --------------------------
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      # --------------------------
+      # 2️⃣ Кеш Swift Packages
+      # --------------------------
+      - name: Cache Swift Packages
+        uses: actions/cache@v3
+        with:
+          path: SourcePackages
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+
+      # --------------------------
+      # 3️⃣ Кеш DerivedData (швидший CI)
+      # --------------------------
+      - name: Cache DerivedData
+        uses: actions/cache@v3
+        with:
+          path: derived_data
+          key: ${{ runner.os }}-deriveddata-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-deriveddata-
+
+      # --------------------------
+      # 4️⃣ Setup Ruby для fastlane
+      # --------------------------
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2
+          bundler-cache: true
+
+      # --------------------------
+      # 5️⃣ Створюємо AuthKey.p8 на льоту
+      # --------------------------
+      - name: Create App Store Connect API key
+        run: |
+          mkdir -p fastlane
+          echo -n "${ASC_KEY_P8}" > fastlane/AuthKey.p8
+        env:
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+
+      # --------------------------
+      # 6️⃣ Запуск fastlane lane
+      # --------------------------
+      - name: Run fastlane beta
+        env:
+          CI: true
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_PATH: fastlane/AuthKey.p8
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+        run: bundle exec fastlane beta
